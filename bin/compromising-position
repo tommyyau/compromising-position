@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+// Launch with secure heap allocation to reduce risk of secrets
+// lingering in process memory after buffer zeroing.
+//
+// If --secure-heap is not supported (older Node), fall back gracefully.
+
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const entry = resolve(__dirname, "..", "dist", "index.js");
+
+try {
+  execFileSync(
+    process.execPath,
+    ["--secure-heap=16384", "--secure-heap-min=8", entry, ...process.argv.slice(2)],
+    { stdio: "inherit" },
+  );
+} catch (err) {
+  // If secure heap not available, run without it
+  if (err && typeof err === "object" && "status" in err) {
+    process.exit(err.status as number);
+  }
+  execFileSync(process.execPath, [entry, ...process.argv.slice(2)], {
+    stdio: "inherit",
+  });
+}

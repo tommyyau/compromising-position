@@ -1,0 +1,39 @@
+{
+  "name": "compromising-position",
+  "version": "1.0.0",
+  "description": "Privacy-preserving credential exposure checker using k-anonymity",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "bin": {
+    "compromising-position": "./bin/compromising-position"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "tsc --noEmit"
+  },
+  "keywords": [
+    "security",
+    "credentials",
+    "k-anonymity",
+    "hibp",
+    "privacy"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "msw": "^2.3.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}

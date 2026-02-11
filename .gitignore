@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.js.map
+*.d.ts
+!bin/compromising-position
+
+.env
+.env.local
+
+*.log
+audit-log.jsonl
+
+coverage/
+.vitest/
