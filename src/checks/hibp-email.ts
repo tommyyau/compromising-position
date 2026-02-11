@@ -1,3 +1,4 @@
+import { sanitizeForTerminal } from "../core/sanitize.js";
 import type {
   BreachEntry,
   HibpEmailResult,
@@ -7,22 +8,46 @@ import type {
 
 const HIBP_BASE = "https://haveibeenpwned.com/api/v3";
 const USER_AGENT = "compromising-position/1.0.0";
+const MAX_RETRIES = 1;
 
-/** Delay for rate limiting. HIBP rate limits to ~10 requests per minute for paid keys. */
+/** Delay for rate limiting. */
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/**
+ * Fetch wrapper that:
+ * - Never exposes the API key in error messages
+ * - Handles 429 rate limiting with Retry-After header
+ */
 async function hibpFetch(
   url: string,
   apiKey: string,
+  retries = 0,
 ): Promise<Response> {
-  return fetch(url, {
-    headers: {
-      "hibp-api-key": apiKey,
-      "User-Agent": USER_AGENT,
-    },
-  });
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      headers: {
+        "hibp-api-key": apiKey,
+        "User-Agent": USER_AGENT,
+      },
+    });
+  } catch (err) {
+    // Wrap network errors to prevent any header/key leakage
+    const msg = err instanceof Error ? err.message : "unknown error";
+    throw new Error(`HIBP request failed: ${sanitizeForTerminal(msg)}`);
+  }
+
+  // Handle rate limiting with exponential backoff
+  if (response.status === 429 && retries < MAX_RETRIES) {
+    const retryAfter = parseInt(response.headers.get("Retry-After") ?? "2", 10);
+    const waitMs = (Number.isNaN(retryAfter) ? 2 : retryAfter) * 1000;
+    await delay(waitMs);
+    return hibpFetch(url, apiKey, retries + 1);
+  }
+
+  return response;
 }
 
 async function fetchBreaches(
@@ -37,7 +62,9 @@ async function fetchBreaches(
 
   if (response.status === 404) return [];
   if (!response.ok) {
-    throw new Error(`Breaches API returned ${response.status}: ${response.statusText}`);
+    throw new Error(
+      `Breaches API returned ${response.status}: ${sanitizeForTerminal(response.statusText)}`,
+    );
   }
 
   return (await response.json()) as BreachEntry[];
@@ -56,7 +83,7 @@ async function fetchStealerLogs(
   if (response.status === 404) return [];
   if (!response.ok) {
     throw new Error(
-      `Stealer logs API returned ${response.status}: ${response.statusText}`,
+      `Stealer logs API returned ${response.status}: ${sanitizeForTerminal(response.statusText)}`,
     );
   }
 
@@ -75,7 +102,9 @@ async function fetchPastes(
 
   if (response.status === 404) return [];
   if (!response.ok) {
-    throw new Error(`Pastes API returned ${response.status}: ${response.statusText}`);
+    throw new Error(
+      `Pastes API returned ${response.status}: ${sanitizeForTerminal(response.statusText)}`,
+    );
   }
 
   return (await response.json()) as PasteEntry[];
@@ -111,7 +140,7 @@ export async function checkHibpEmail(
       breaches: [],
       stealerLogs: [],
       pastes: [],
-      error: message,
+      error: sanitizeForTerminal(message),
     };
   }
 }

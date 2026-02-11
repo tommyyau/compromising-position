@@ -15,6 +15,30 @@ export enum KeyProvider {
   Mailgun = "Mailgun",
   DiscordBot = "Discord Bot",
   TelegramBot = "Telegram Bot",
+  // Phase 1 additions
+  GitLabPAT = "GitLab PAT",
+  GitLabPipeline = "GitLab Pipeline",
+  NpmToken = "npm Token",
+  PyPIToken = "PyPI Token",
+  ShopifyPrivate = "Shopify Private",
+  ShopifyAccess = "Shopify Access",
+  DigitalOceanPAT = "DigitalOcean PAT",
+  DigitalOceanOAuth = "DigitalOcean OAuth",
+  Supabase = "Supabase",
+  HashiCorpVault = "HashiCorp Vault",
+  TerraformCloud = "Terraform Cloud",
+  PlanetScale = "PlanetScale",
+  Postman = "Postman",
+  GrafanaService = "Grafana Service",
+  Linear = "Linear",
+  Netlify = "Netlify",
+  DopplerServiceToken = "Doppler Service Token",
+  DopplerServiceAccount = "Doppler Service Account",
+  Buildkite = "Buildkite",
+  Atlassian = "Atlassian",
+  Figma = "Figma",
+  CircleCI = "CircleCI",
+  Notion = "Notion",
   Unknown = "Unknown",
 }
 
@@ -78,10 +102,32 @@ export interface HibpEmailResult {
 
 export type RiskLevel = "critical" | "high" | "medium" | "low" | "info";
 
+export type PluginInputKind = "secret" | "email" | "both";
+
+export interface PluginCheckResult {
+  pluginId: string;
+  pluginName: string;
+  found: boolean;
+  details: string;
+  severity: RiskLevel;
+  error: string | null;
+  metadata?: Record<string, unknown>;
+}
+
+export interface VerificationResult {
+  provider: KeyProvider;
+  active: boolean;
+  details: string;
+  error: string | null;
+  endpoint: string;
+}
+
 export interface CheckResult {
   local: LocalCheckResult;
   hibpPassword: HibpPasswordResult | null;
   hibpEmail: HibpEmailResult | null;
+  pluginResults: PluginCheckResult[];
+  verification: VerificationResult | null;
   riskLevel: RiskLevel;
   summary: string;
   fingerprint: string;
@@ -100,7 +146,12 @@ export interface AuditEntry {
 export interface AppConfig {
   hibpApiKey: string | null;
   auditLogPath: string | null;
+  envFile?: string;
   offline: boolean;
   json: boolean;
   verbose: boolean;
+  verify: boolean;
+  enabledPlugins: string[];
+  disabledPlugins: string[];
+  pluginApiKeys: Record<string, string>;
 }
