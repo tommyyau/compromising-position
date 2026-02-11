@@ -6,6 +6,8 @@ A privacy-preserving credential exposure checker that identifies what kind of ke
 
 Built in response to the [OpenClaw security crisis](https://www.theregister.com/2026/02/05/openclaw_skills_marketplace_leaky_security) where tens of thousands of API keys were exposed through leaky skills, malicious plugins, and publicly accessible instances. Security advisories tell you to rotate your keys — but **compromising-position** tells you what happened *before* you rotated.
 
+> **Disclaimer:** I am not a security expert. This tool was vibe-coded in the age of personal software — built because I needed it and thought others might too. It aggregates publicly available breach-checking APIs and applies well-documented techniques (k-anonymity, SHA-256 hashing, Shannon entropy). It is not a substitute for professional security auditing, penetration testing, or incident response. Use it as one signal among many, not as your only line of defence. If you find a vulnerability, please [open an issue](https://github.com/tommyyau/compromising-position/issues).
+
 ## The Problem
 
 You connected your API keys to a service. That service got breached, misconfigured, or had a supply chain attack. You rotated your keys. But:
@@ -236,6 +238,12 @@ npm install
 npm run build
 npm test          # 196 tests across 23 test files
 ```
+
+## A Note on How This Was Built
+
+This project was vibe-coded — built with AI assistance (Claude) in a single session, from idea to published repo. The architecture, code, and tests were generated collaboratively. I'm not a security researcher; I'm a developer who connected API keys to OpenClaw, watched the breach news unfold, and wanted a tool to answer the question: *"was I actually compromised?"*
+
+If you're a security professional and spot something wrong, PRs and issues are very welcome.
 
 ## License
 

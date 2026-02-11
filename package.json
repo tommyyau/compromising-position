@@ -1,7 +1,7 @@
 {
   "name": "compromising-position",
   "version": "1.0.0",
-  "description": "Privacy-preserving credential exposure checker using k-anonymity",
+  "description": "Privacy-preserving credential exposure checker — were your API keys compromised? Find out.",
   "type": "module",
   "engines": {
     "node": ">=20.0.0"
@@ -9,22 +9,44 @@
   "bin": {
     "compromising-position": "./bin/compromising-position"
   },
+  "files": [
+    "dist/",
+    "bin/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
     "security",
     "credentials",
     "k-anonymity",
     "hibp",
-    "privacy"
+    "privacy",
+    "api-keys",
+    "breach-detection",
+    "credential-exposure",
+    "openclaw",
+    "secret-scanning",
+    "cli"
   ],
+  "author": "Tommy Yau",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tommyyau/compromising-position.git"
+  },
+  "homepage": "https://github.com/tommyyau/compromising-position",
+  "bugs": {
+    "url": "https://github.com/tommyyau/compromising-position/issues"
+  },
   "dependencies": {
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
