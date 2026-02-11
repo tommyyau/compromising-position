@@ -21,7 +21,7 @@ try {
 } catch (err) {
   // If secure heap not available, run without it
   if (err && typeof err === "object" && "status" in err) {
-    process.exit(err.status as number);
+    process.exit(Number(err.status));
   }
   execFileSync(process.execPath, [entry, ...process.argv.slice(2)], {
     stdio: "inherit",

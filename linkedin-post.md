@@ -40,11 +40,11 @@ Feed it a key. It:
 
 - Identifies the provider (39 formats — OpenAI, Anthropic, AWS, GitHub, Slack, and more)
 - Checks breach databases using k-anonymity (your secret never leaves your machine in full)
-- Queries multiple sources — HIBP, GitGuardian, dark web databases
+- Queries multiple sources — HIBP out of the box, plus optional plugins for GitGuardian, DeHashed, and more
 - Optionally verifies if the key is still active by calling the provider API
 - Gives you a single risk score from INFO to CRITICAL
 
-The privacy model matters. Most security tools ask you to hand over your secrets to check them. This one uses k-anonymity and SHA-256 hashing — the same approach HIBP uses — so you can check without creating a new exposure.
+The privacy model matters. Most security tools ask you to hand over your secrets to check them. This one uses k-anonymity — the same approach Have I Been Pwned uses — so your secret never leaves your machine in full.
 
 No existing open-source tool combines key identification + multi-source breach checking + active verification in a single privacy-preserving CLI. That's the gap.
 
