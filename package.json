@@ -1,6 +1,6 @@
 {
   "name": "compromising-position",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Privacy-preserving credential exposure checker — were your API keys compromised? Find out.",
   "type": "module",
   "engines": {
